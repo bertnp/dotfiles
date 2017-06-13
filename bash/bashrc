@@ -1,0 +1,34 @@
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+[ -z "$TMUX" ] && export TERM="xterm-256color"
+
+# get location of this script
+script_dir="${BASH_SOURCE[0]}"
+if [ -h "$script_dir" ]; then
+    script_dir=`readlink $script_dir`
+fi
+script_dir="$( cd "$( dirname "$script_dir" )" && pwd )"
+
+# preliminary local settings
+source "$script_dir/local_pre.sh"
+
+# aliases
+source "$script_dir/bash_aliases.sh"
+
+# functions
+source "$script_dir/bash_functions.sh"
+
+# bashmarks
+source "$repo_dir/bashmarks/bashmarks.sh"
+
+# directory colors
+eval $(dircolors -b ~/.dir_colors)
+
+# set theme
+"$terminal_theme"
+
+# vi mode
+set -o vi
+
+# more local settings, e.g. prompt
+source "$script_dir/local_post.sh"
