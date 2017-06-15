@@ -1,0 +1,364 @@
+"=============================================================================="
+"                               General Settings                               "
+"~============================================================================="
+set shellslash              " allow us to use / for windows paths instead of \
+execute pathogen#infect()
+
+if has('win32') || has ('win64')
+    let $VIMHOME = $HOME."/vimfiles"
+else
+    let $VIMHOME = $HOME."/.vim"
+endif
+
+let base16colorspace=256    " using corresponding shell theme
+" set background=dark
+colorscheme base16-monokai  " set color scheme
+set nu                      " turn on line numbers
+set tw=80                   " text width
+set tabstop=4               " number of spaces a tab counts for
+set shiftwidth=4            " number of spaces to shift
+set softtabstop=4           " backspace can get rid of 4 spaces with one press
+set expandtab               " turn tab into spaces
+syntax on                   " turn syntax highlighting on
+set backspace=2             " turn on backspace in insert mode
+set smartindent             " smart autoindenting
+set hlsearch                " turn on search highlighting
+set smartcase               " turn on smart case sensitivity for searches
+set ignorecase              " needed for smartcase
+set encoding=utf-8          " set default encoding to utf-8
+set filetype=unix           " default filetype
+set fileformats=unix,dos    " :help filetypes
+set cursorline              " highlight cursor line
+set cc=81                   " highlight 81st column
+set laststatus=2            " turn on status bar
+set listchars=tab:▸\ ,eol:¬ " use these to show white space
+set backup                  " turn backups on
+set omnifunc=syntaxcomplete#Complete " turn on omnicompletion
+let &viminfo.=",n" . "$HOME/.vim/.viminfo" " viminfo directory
+let &backupdir=$VIMHOME . "/backup/" " backup directory
+let &directory=$VIMHOME . "/swap/" " swap file directory
+
+" Disabled options
+" set nohlsearch            " turn off search highlighting
+" set autochdir
+
+" When you must have soft wrapping, use this:
+" set tw=0 " set text width to zero prevents automatic hard wrapping
+" set linebreak " prevents breaks in the middle of words
+set display=lastline " allow partial lines to be shown
+" TODO: make a command to toggle between hard/soft break settings
+
+
+"=============================================================================="
+"                                   Mappings                                   "
+"~============================================================================="
+execute "set <M-a>=a"
+execute "set <M-y>=y"
+execute "set <M-p>=p"
+" execute "set <M-j>=j"
+" execute "set <M-k>=k"
+" execute "set <M-4>=4"
+" execute "set <M-6>=6"
+" execute "set <M-0>=0"
+nmap <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
+map <C-n> :NERDTreeToggle<CR>
+" move in soft wrapped text using ctrl+direction instead of g then direction
+vmap <M-j> gj
+vmap <M-k> gk
+vmap <M-4> g$
+vmap <M-6> g^
+vmap <M-0> g^
+nmap <M-j> gj
+nmap <M-k> gk
+nmap <M-4> g$
+nmap <M-6> g^
+nmap <M-0> g^
+
+" make headers
+nmap <F1><F1> :call MakeTextHeader("=", "%", 1)<CR>
+nmap <F1><F2> :call MakeTextHeader("=", "%", 0)<CR>
+nmap <F1><F3> :call MakeTextHeader("-", "%", 1)<CR>
+nmap <F1><F4> :call MakeTextHeader("-", "%", 0)<CR>
+nmap <F1><F5> :call MakeBottomRule()<CR>
+
+" change wrapping mode
+nmap <F3>s :set linebreak display=lastline tw=0<CR>
+nmap <F3>h :set nolinebreak display= tw=80<CR>
+
+
+" common Tabularize commands
+"
+" line up elements in table, ie.
+" x | y | z
+" xxxx | yyyy | zzzz
+" becomes
+" x    | y    | z
+" xxxx | yyyy | zzzz
+vmap <F2>\| :Tabularize /\|<CR>
+nmap <F2>\| :Tabularize /\|<CR>
+
+" same for tables & delimited tables
+vmap <F2>& :Tabularize /&<CR>
+nmap <F2>& :Tabularize /&<CR>
+
+" line up elements in description, ie.
+" First Item: description 1
+" Second Item: description 2
+" Third Item: description 3: sub-description
+" becomes
+" First Item  : description 1
+" Second Item : description 2
+" Third Item  : description 3: sub-description
+" The pattern ensures that only the first ":" is matched
+vmap <F2>: :Tabularize /^[^\:]*\zs\:<CR>
+nmap <F2>: :Tabularize /^[^\:]*\zs\:<CR>
+
+" aligns contents of [ ], ie.
+" [here] [are] [some] [words]
+" [and] [there are] [more] [here]
+" becomes
+" text [here] [are]       [some] [words]
+" text [and]  [there are] [more] [here]
+" here, l1 means left align text before [ and put one space, center align the [
+" and put 0 spaces after the [
+nmap <F2>[ :Tabularize /[/l1c0<CR>
+vmap <F2>[ :Tabularize /[/l1c0<CR>
+
+" K=split line
+map K i<CR><Esc>k
+
+" change local working directory to current file directory
+nnoremap <F6> :cd %:p:h<CR>:pwd<CR>
+
+" copy current directory to clipboard
+nnoremap <C-F6> :let @+=getcwd()<CR>
+
+" clipboard copy/paste
+" 7-bit terminal support (slows down exiting insert mode...)
+" vmap y <M-y>
+" nmap p <M-p>
+" imap p <M-p>
+
+" " osx support
+" vmap ¥ <M-y>
+" nmap π <M-p>
+" imap π <M-p>
+
+vmap <M-y> "+y
+nmap <M-p> "+p
+imap <M-p> <C-r>+
+"
+" " select all
+nmap <M-a> ggVG
+" nmap å ggVG
+
+" open vimrc
+nmap <F12>r :tabe $HOME/dotfiles/vim/vimrc<CR>
+nmap <F12>g :tabe $HOME/dotfiles/vim/gvimrc<CR>
+
+:nnoremap <F5> "=strftime("%H:%M")<CR>P
+:inoremap <F5> <C-R>=strftime("%H:%M")<CR>
+
+"=============================================================================="
+"                         Airline Status Bar Settings                          "
+"~============================================================================="
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_theme = 'base16'
+let g:Powerline_symbols="fancy"
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.readonly = '⭤'
+" let g:airline_symbols.linenr = '⭡'
+let g:airline_symbols.linenr = ''
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = '⮀'
+let g:airline#extensions#tabline#left_alt_sep = '⮁'
+let g:airline#extensions#whitespace#trailing_format = 'T[%s]'
+let g:airline#extensions#whitespace#mixed_indent_format = 'I[%s]'
+
+function! AirlineInit()
+    let g:airline_section_a = airline#section#create(['mode', ' ', 'branch'])
+    let g:airline_section_b = airline#section#create_left(['ffenc', '%t'])
+    let g:airline_section_c = airline#section#create(['filetype'])
+    let g:airline_section_x = airline#section#create([''])
+    let g:airline_section_y = airline#section#create(['%B'])
+    let g:airline_section_z = airline#section#create_right(['%P', '%l', '%c'])
+endfunction
+autocmd VimEnter * call AirlineInit()
+
+"=============================================================================="
+"                          Operating System Settings                           "
+"~============================================================================="
+if has("win32")
+    " use par for paragraph formatting see unix entry for details
+    " this one has quote handling enabled
+    " set formatprg=par\ w80h1rTgqR\ B=.,?_A_a\ Q=\"_s>\"
+    " this one has quote handling disabled
+    set formatprg=par\ w80h1rTgR\ B=.,?_A_a
+endif
+if has("unix") && !has("macunix")
+    " use par for paragraph formatting. See par help or man par for details.
+    " width = 80
+    " hang = 1 (for lists with -)
+    " repeat = 3
+    " expand tabs to 4 spaces
+    " guess
+    " quote
+    " Report, cause an error if a word is too long
+    " body characters = '.', ',', '?', capital letters, lower-case letters
+    " quote characters = spaces, '>', '|'
+    " this one has quote handling enabled
+    " set formatprg=par\ w80h1rTgqR\ B=.,?_A_a\ Q=_s\\>\\\|
+    " this version has quote handling disabled
+    set formatprg=par\ w80h1rTgR\ B=.,?_A_a
+endif
+
+"=============================================================================="
+"                              Vim-Latex Settings                              "
+"~============================================================================="
+" default output to pdf
+let g:Tex_DefaultTargetFormat='pdf'
+let g:Tex_MultipleCompileFormats='pdf'
+
+" set compile rule
+let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode $*'
+" let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode -shell-escape -file-line-error-style $*'
+
+" change pdf viewer
+if has("win32")
+    let g:Tex_ViewRule_pdf='C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe'
+endif
+if has("macunix")
+    let g:Tex_ViewRule_pdf='Skim'
+endif
+if has("unix")
+    " let g:Tex_ViewRule_pdf='zathura'
+    " let g:Tex_ViewRule_pdf='okular'
+end
+
+let g:Tex_AutoFolding=0 " turn off folding
+
+" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
+" can be called correctly.
+
+" REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
+filetype plugin on
+
+" IMPORTANT: grep will sometimes skip displaying the file name if you
+" search in a singe file. This will confuse Latex-Suite. Set your grep
+" program to always generate a file-name.
+set grepprg=grep\ -nH\ $*
+
+" OPTIONAL: This enables automatic indentation as you type.
+" filetype indent on
+
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+" The following changes the default filetype back to 'tex':
+let g:tex_flavor='latex'
+
+
+" TIP: if you write your \label's as \label{fig:something}, then if you
+" type in \ref{fig: and press <C-n> you will automatically cycle through
+" all the figure labels. Very useful!
+set iskeyword+=:
+
+"=============================================================================="
+"                               Custom Functions                               "
+"~============================================================================="
+"TODO put these in separate file
+"                                MakeTextHeader                                "
+"~============================================================================="
+" turns current line of text into a header.
+" delim   : character used for horizontal rules
+" boxchar : character used around the edges
+" top     : 1 for top rule, 0 for no top rule
+function! MakeTextHeader(delim, boxchar, top)
+    " remove header formatting on current line
+    try
+        execute 'normal! :s/ \+$\| \+' . a:boxchar . "$//g\<CR>"
+    catch
+    endtry
+    try
+        execute 'normal! :s/^' . a:boxchar . ' \+//g' . "\<CR>"
+    catch
+    endtry
+    noh
+
+    " remove header formatting on below line
+    if line('.') != line('$')
+        normal! j
+        let expr = '^' . a:boxchar . '\~-\+' . a:boxchar .
+                   \ '\|^' . a:boxchar. '\~=\+' . a:boxchar
+        if match(getline('.'), expr) != -1
+            if line('.') == line('$') " if we're on the last line
+                normal! dd
+            else
+                normal! dd
+                normal! k
+            end
+        else
+            normal! k
+        end
+    end
+
+    "remove header formatting on above line
+    if line('.') != 1
+        normal! k
+        let expr = '^' . a:boxchar . '-\+' . a:boxchar . '\|^'
+                   \  . a:boxchar . '=\+' . a:boxchar
+        if match(getline('.'), expr) != -1
+            normal dd
+        else
+            normal! j
+        end
+    end
+
+    center
+    " insert spaces for right-hand %
+    let icount = &tw - col('$') + 1
+    execute "normal! " . icount . "A "
+    " insert right and left-hand %
+    execute "normal! $r" . a:boxchar . "0r" . a:boxchar
+    " insert top rule
+    if a:top == 1
+        normal! O
+        " clear any automatically created comment marks
+        normal! C
+
+        execute "normal! 0i" . a:boxchar
+        execute "normal! " . (&tw-1) . "A" . a:delim
+    execute "normal! r" . a:boxchar . "j"
+    endif
+    " insert bottom rule
+    normal! o
+    " clear any automatically created comment marks
+    normal! C
+
+    execute "normal! 0i" . a:boxchar . "~"
+    execute "normal!" . (&tw-2) . "A" . a:delim
+    execute "normal! r" . a:boxchar
+    normal! k
+endfunction
+
+"                                MakeBottomRule                                "
+"~============================================================================="
+function! MakeBottomRule()
+    center
+    normal! o
+    execute "normal! " . &tw . "i-\<ESC>\<CR>"
+    normal kk
+endfunction
+
+
+command -nargs=0 PickerMode :call PickerMode(<f-args>)
+
+function PickerMode()
+    nmap <buffer> <F7> :tabe `=getline(".")`<CR>
+endfunction
+

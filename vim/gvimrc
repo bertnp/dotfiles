@@ -1,0 +1,47 @@
+"=============================================================================="
+"                               General Settings                               "
+"~============================================================================="
+set guioptions-=T             " remove toolbar
+set guioptions-=m             " remove menu
+"set guioptions-=L            " remove left scrollbar
+"set guioptions-=r            " remove right scrollbar
+set spell                     " turn on spell check
+" set spelllang=en_us         " use US English instead of general English
+
+"=============================================================================="
+"                            Window Size and Fonts                             "
+"~============================================================================="
+if has("win32")
+    " set columns=88            " set window width
+    " set lines=66              " set window height
+    " set guifont=Consolas:h12  " set font and size = 12
+    " set guifont=Consolas\ for\ Powerline\ FixedD:h14  " set font and size = 12
+    " set guifont+=SimHei:h13:cANSI
+    " " set guifontwide=Consolas\ for\ Powerline\ FixedD:h14
+endif
+if has("unix") && !has("macunix")
+    set columns=87
+    set lines=73
+    set guifont=Consolas\ for\ Powerline\ 14
+    " set guifontwide=Monospace\ 14
+    " set guifontwide=Droid\ Sans\ Mono\ 13
+    set guifontwide=Consolas\ for\ Powerline\ 14
+endif
+if has("macunix")
+    set columns=87
+    set lines=70
+    set guifont=Consolas:h14
+endif
+
+"=============================================================================="
+"                                   Mappings                                   "
+"~============================================================================="
+" replace/disable mac print and save hotkeys
+if(has("macunix"))
+    macmenu File.Print key=<nop>
+    macmenu File.Save key=<nop>
+    macmenu File.Save\ As\.\.\. key=<nop>
+
+    nmap <D-p> <M-p>
+    imap <D-p> <M-p>
+endif
