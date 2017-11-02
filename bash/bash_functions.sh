@@ -72,3 +72,8 @@ function ml() {
     matlab_command+="startup;"
     env DISPLAY="" matlab -nodesktop -nosplash -r "$matlab_command"
 }
+
+# set window title
+function settitle() {
+    echo -ne "\e]0;$1\a"
+}
