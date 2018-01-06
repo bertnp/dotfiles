@@ -1,0 +1,2 @@
+source $HOME/dotfiles/vim/local/lab.vim
+source $HOME/dotfiles/vim/vimrc
