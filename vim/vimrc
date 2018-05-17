@@ -19,6 +19,7 @@ set tabstop=4               " number of spaces a tab counts for
 set shiftwidth=4            " number of spaces to shift
 set softtabstop=4           " backspace can get rid of 4 spaces with one press
 set expandtab               " turn tab into spaces
+set nojs                    " do not join spaces (results in extra space)
 syntax on                   " turn syntax highlighting on
 set backspace=2             " turn on backspace in insert mode
 set smartindent             " smart autoindenting
