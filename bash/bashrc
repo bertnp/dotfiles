@@ -22,7 +22,7 @@ source "$script_dir/bash_functions.sh"
 source "$repo_dir/bashmarks/bashmarks.sh"
 
 # directory colors
-eval $(dircolors -b ~/.dir_colors)
+eval $(env TERM=xterm-256color dircolors -b ~/.dir_colors)
 
 # set theme
 "$terminal_theme"
