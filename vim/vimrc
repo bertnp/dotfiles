@@ -29,11 +29,13 @@ set ignorecase              " needed for smartcase
 set encoding=utf-8          " set default encoding to utf-8
 set filetype=unix           " default filetype
 set fileformats=unix,dos    " :help filetypes
-set cursorline              " highlight cursor line
+" set cursorline              " highlight cursor line; disabled (slow)
 set cc=81                   " highlight 81st column
 set laststatus=2            " turn on status bar
 set listchars=tab:▸\ ,eol:¬ " use these to show white space
 set backup                  " turn backups on
+set linebreak               " don't softbreak in the middle of words
+set display=lastline        " prevent showing symbol when line doesn't fit
 set omnifunc=syntaxcomplete#Complete " turn on omnicompletion
 let &viminfo.=",n" . "$HOME/.vim/.viminfo" " viminfo directory
 let &backupdir=$VIMHOME . "/backup/" " backup directory
@@ -74,6 +76,10 @@ nmap <M-k> gk
 nmap <M-4> g$
 nmap <M-6> g^
 nmap <M-0> g^
+nmap $ g$
+nmap ^ g^
+vmap $ g$
+vmap ^ g^
 
 " make headers
 nmap <F1><F1> :call MakeTextHeader("=", "%", 1)<CR>
