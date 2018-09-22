@@ -29,7 +29,7 @@ set ignorecase              " needed for smartcase
 set encoding=utf-8          " set default encoding to utf-8
 set filetype=unix           " default filetype
 set fileformats=unix,dos    " :help filetypes
-" set cursorline              " highlight cursor line; disabled (slow)
+set cursorline!             " highlight cursor line; disabled (slow)
 set cc=81                   " highlight 81st column
 set laststatus=2            " turn on status bar
 set listchars=tab:▸\ ,eol:¬ " use these to show white space
