@@ -77,3 +77,8 @@ function ml() {
 function settitle() {
     echo -ne "\e]0;$1\a"
 }
+
+# mount ISO
+function isomount() {
+    sudo mount -t iso9660 -o loop "$@" # last two args: src_iso dst_dir
+}
