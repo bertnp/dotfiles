@@ -231,6 +231,7 @@ endif
 " default output to pdf
 let g:Tex_DefaultTargetFormat='pdf'
 let g:Tex_MultipleCompileFormats='pdf'
+let g:Tex_BibtexFlavor = 'biber'
 
 " set compile rule
 let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode $*'
