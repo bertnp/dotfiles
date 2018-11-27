@@ -36,6 +36,7 @@ set listchars=tab:▸\ ,eol:¬ " use these to show white space
 set backup                  " turn backups on
 set linebreak               " don't softbreak in the middle of words
 set display=lastline        " prevent showing symbol when line doesn't fit
+set breakindent             " matching indent for soft wrapped lines
 set omnifunc=syntaxcomplete#Complete " turn on omnicompletion
 let &viminfo.=",n" . "$HOME/.vim/.viminfo" " viminfo directory
 let &backupdir=$VIMHOME . "/backup/" " backup directory
