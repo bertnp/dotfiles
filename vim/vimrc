@@ -2,7 +2,6 @@
 "                               General Settings                               "
 "~============================================================================="
 set shellslash              " allow us to use / for windows paths instead of \
-execute pathogen#infect()
 
 if has('win32') || has ('win64')
     let $VIMHOME = $HOME."/vimfiles"
@@ -41,6 +40,8 @@ set omnifunc=syntaxcomplete#Complete " turn on omnicompletion
 let &viminfo.=",n" . "$HOME/.vim/.viminfo" " viminfo directory
 let &backupdir=$VIMHOME . "/backup/" " backup directory
 let &directory=$VIMHOME . "/swap/" " swap file directory
+
+filetype plugin on          " load plugins in ftplugin directories
 
 " Disabled options
 " set nohlsearch            " turn off search highlighting
@@ -199,175 +200,26 @@ function! AirlineInit()
 endfunction
 autocmd VimEnter * call AirlineInit()
 
-"=============================================================================="
-"                          Operating System Settings                           "
-"~============================================================================="
-if has("win32")
-    " use par for paragraph formatting see unix entry for details
-    " this one has quote handling enabled
-    " set formatprg=par\ w80h1rTgqR\ B=.,?_A_a\ Q=\"_s>\"
-    " this one has quote handling disabled
-    set formatprg=par\ w80h1rTgR\ B=.,?_A_a
-endif
-if has("unix") && !has("macunix")
-    " use par for paragraph formatting. See par help or man par for details.
-    " width = 80
-    " hang = 1 (for lists with -)
-    " repeat = 3
-    " expand tabs to 4 spaces
-    " guess
-    " quote
-    " Report, cause an error if a word is too long
-    " body characters = '.', ',', '?', capital letters, lower-case letters
-    " quote characters = spaces, '>', '|'
-    " this one has quote handling enabled
-    " set formatprg=par\ w80h1rTgqR\ B=.,?_A_a\ Q=_s\\>\\\|
-    " this version has quote handling disabled
-    set formatprg=par\ w80h1rTgR\ B=.,?_A_a
-endif
-
-"=============================================================================="
-"                              Vim-Latex Settings                              "
-"~============================================================================="
-" default output to pdf
-let g:Tex_DefaultTargetFormat='pdf'
-let g:Tex_MultipleCompileFormats='pdf'
-let g:Tex_BibtexFlavor = 'biber'
-
-" set compile rule
-let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode $*'
-" let g:Tex_CompileRule_pdf='pdflatex -interaction=nonstopmode -shell-escape -file-line-error-style $*'
-
-" change pdf viewer
-if has("win32")
-    let g:Tex_ViewRule_pdf='C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe'
-endif
-if has("macunix")
-    let g:Tex_ViewRule_pdf='Skim'
-endif
-if has("unix")
-    " let g:Tex_ViewRule_pdf='zathura'
-    " let g:Tex_ViewRule_pdf='okular'
-end
-
-let g:Tex_AutoFolding=0 " turn off folding
-
-" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
-" can be called correctly.
-
-" REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
-filetype plugin on
-
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse Latex-Suite. Set your grep
-" program to always generate a file-name.
-set grepprg=grep\ -nH\ $*
-
-" OPTIONAL: This enables automatic indentation as you type.
-" filetype indent on
-
-" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
-" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
-" The following changes the default filetype back to 'tex':
-let g:tex_flavor='latex'
-
-
-" TIP: if you write your \label's as \label{fig:something}, then if you
-" type in \ref{fig: and press <C-n> you will automatically cycle through
-" all the figure labels. Very useful!
-set iskeyword+=:
-
-"=============================================================================="
-"                               Custom Functions                               "
-"~============================================================================="
-"TODO put these in separate file
-"                                MakeTextHeader                                "
-"~============================================================================="
-" turns current line of text into a header.
-" delim   : character used for horizontal rules
-" boxchar : character used around the edges
-" top     : 1 for top rule, 0 for no top rule
-function! MakeTextHeader(delim, boxchar, top)
-    " remove header formatting on current line
-    try
-        execute 'normal! :s/ \+$\| \+' . a:boxchar . "$//g\<CR>"
-    catch
-    endtry
-    try
-        execute 'normal! :s/^' . a:boxchar . ' \+//g' . "\<CR>"
-    catch
-    endtry
-    noh
-
-    " remove header formatting on below line
-    if line('.') != line('$')
-        normal! j
-        let expr = '^' . a:boxchar . '\~-\+' . a:boxchar .
-                   \ '\|^' . a:boxchar. '\~=\+' . a:boxchar
-        if match(getline('.'), expr) != -1
-            if line('.') == line('$') " if we're on the last line
-                normal! dd
-            else
-                normal! dd
-                normal! k
-            end
-        else
-            normal! k
-        end
-    end
-
-    "remove header formatting on above line
-    if line('.') != 1
-        normal! k
-        let expr = '^' . a:boxchar . '-\+' . a:boxchar . '\|^'
-                   \  . a:boxchar . '=\+' . a:boxchar
-        if match(getline('.'), expr) != -1
-            normal dd
-        else
-            normal! j
-        end
-    end
-
-    center
-    " insert spaces for right-hand %
-    let icount = &tw - col('$') + 1
-    execute "normal! " . icount . "A "
-    " insert right and left-hand %
-    execute "normal! $r" . a:boxchar . "0r" . a:boxchar
-    " insert top rule
-    if a:top == 1
-        normal! O
-        " clear any automatically created comment marks
-        normal! C
-
-        execute "normal! 0i" . a:boxchar
-        execute "normal! " . (&tw-1) . "A" . a:delim
-    execute "normal! r" . a:boxchar . "j"
-    endif
-    " insert bottom rule
-    normal! o
-    " clear any automatically created comment marks
-    normal! C
-
-    execute "normal! 0i" . a:boxchar . "~"
-    execute "normal!" . (&tw-2) . "A" . a:delim
-    execute "normal! r" . a:boxchar
-    normal! k
-endfunction
-
-"                                MakeBottomRule                                "
-"~============================================================================="
-function! MakeBottomRule()
-    center
-    normal! o
-    execute "normal! " . &tw . "i-\<ESC>\<CR>"
-    normal kk
-endfunction
-
-
-command -nargs=0 PickerMode :call PickerMode(<f-args>)
-
-function PickerMode()
-    nmap <buffer> <F7> :tabe `=getline(".")`<CR>
-endfunction
-
+"==============================================================================%
+"                               vimtex settings                                %
+"~=============================================================================%
+" let g:vimtex_quickfix_open_on_warning = 0
+let g:vimtex_quickfix_latexlog = {
+      \ 'default' : 1,
+      \ 'ignore_filters' : [],
+      \ 'general' : 1,
+      \ 'references' : 1,
+      \ 'overfull' : 0,
+      \ 'underfull' : 0,
+      \ 'font' : 1,
+      \ 'packages' : {
+      \   'default' : 1,
+      \   'general' : 1,
+      \   'babel' : 1,
+      \   'biblatex' : 1,
+      \   'fixltx2e' : 1,
+      \   'hyperref' : 1,
+      \   'natbib' : 1,
+      \   'scrreprt' : 1,
+      \   'titlesec' : 1,
+      \ }}
